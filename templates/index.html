@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block head %}{% endblock %}
+
+{% block content %}
+
+<!---Main input text -->
+<div id="login_form">
+  <div style="margin:10px;border-width:10px;">
+    <!--Jobs:<br>-->
+    <!--- Box where user inputs restaurant, has name restaurant_type -->
+    <input id="job1" type="text" class="input-medium" placeholder="Job title - Partner A" size="10">
+    <!--- Box where user inputs allowed distance, has name miles -->
+    <input id="job2" type="text" class="input-medium" placeholder="Job title - Partner B" size="10">
+    <p><div><input id="find_button" type="submit" class="btn btn-success" value="Help me pick a place"></div>
+
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+  // Search send (press enter) - jquery
+  // Wait til page load is ready
+  $(document).ready(function(){
+  console.log( "ready!" );
+  //When the button with id find_button is clicked then do these actions
+  $('#find_button').click(function() {
+  //Collect the values in the form fields with ids of job1, job2
+  var job1 = $('#job1').val();
+  var job2 = $('#job2').val();
+  //Call the getWaypoints function in data.js with the input values
+  window.location.href = 'maps?job1='+job1+'&job2='+job2
+  });
+  });
+</script>
+
+{% endblock %}
