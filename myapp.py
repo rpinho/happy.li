@@ -1,3 +1,4 @@
+#import locale
 import model
 import os, json
 from flask import Flask, render_template, request
@@ -15,16 +16,18 @@ n_cities = 10
 def hello():
     return render_template('index.html')
 
-@app.route("/slides")
-def slides():
-    return render_template('slides.html')
+@app.route("/slideshow")
+def slideshow():
+    return render_template('slideshow.html')
 
-@app.route("/exp")
+#locale.currency(df.T.to_dict().values()[0]['salary1'], True, True)
+@app.route("/_exp")
 def exp():
     keys = ['url', 'name', 'description', 'image_url', 'count', 'nbackers',
                'count', 'prediction']
-    result = dict(zip(keys, ['']*len(keys)))
-    return render_template('exp.html', result=result)
+    results = [dict(zip(keys, ['%d'%i]*len(keys))) for i in range(1,4)]
+    return render_template('exp_cards.html', results=results)
+    #return render_template('exp_sliders.html', results=results)
 
 @app.route('/maps')
 def maps():
@@ -50,7 +53,7 @@ def waypoints():
 @app.route('/<pagename>')
 def regularpage(pagename=None):
     """
-    Route not found by the other routes above. May point to a static template. 
+    Route not found by the other routes above. May point to a static template.
     """
     return "You've arrived at " + pagename
     #if pagename==None:
