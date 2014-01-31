@@ -47,10 +47,10 @@
   getWaypoints("{{job1}}", "{{job2}}");
   //When the button with id find_button is clicked then do these actions
   $('#find_button').click(function() {
-  //Collect the values in the form fields with ids of restaurant_name, miles, and zipcode
+  //Collect the values in the form fields
   var job1 = $('#job1').val();
   var job2 = $('#job2').val();
-  //Call the getRestaurant function in data.js with the input values
+  //Call the getWaypoints function in data.js with the input values
   getWaypoints(job1, job2);
   });
   });
