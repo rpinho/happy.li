@@ -1,6 +1,9 @@
+import locale
 from pandas.io import sql
 import MySQLdb as mdb
 from pandas.compat.scipy import percentileofscore
+
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8' )
 
 job1 = 'Data Scientist'
 job2 = 'Piping Engineer'
@@ -13,6 +16,8 @@ weights = dict(zip(columns, weights))
 jobs_table = 'jobs_cities2'
 cities_table = 'cities3'
 db = mdb.connect(user="root", host="localhost", port=3306, db="demo")
+nan_values = {'job1':'', 'job2':'', 'salary1':0, 'salary2':0, 'n1':0, 'n2':0,
+              'description':'', 'image_url':''}
 
 query = """
 select p1.job as job1, p2.job as job2,
@@ -26,7 +31,7 @@ select p1.job as job1, p2.job as job2,
         j2.salary - c.mean_household_income) as adj_salary,
     n1, n2, n_sum,
     COALESCE(abs(n1 - n2), n1, n2) as n_diff,
-    c.latitude, c.longitude, c.url, c.description
+    c.latitude, c.longitude, c.url as image_url, c.description
 from
     (select city, state, formattedLocation, count(*) as n_sum
     from postings
@@ -68,7 +73,7 @@ def get_cities(job1=job1, job2=job2, weights=weights, query=query,
     df = sql.frame_query(query %locals(), db)
 
     # NaN
-    df.fillna(0, inplace=True)
+    df.fillna(nan_values, inplace=True)
 
     # some more transformations I could not implement in mySQL
     #df['salary_f'] = df.adj_salary - df.adj_salary.min()
@@ -83,4 +88,30 @@ def get_cities(job1=job1, job2=job2, weights=weights, query=query,
         score += df[key]*value
     df['score'] = score
 
+    df.job1 = job1
+    df.job2 = job2
+    df = format_output_columns(df)
+    df = get_query_url(df)
+
     return df.sort('score', ascending=False)
+
+def format_output_columns(df):
+    # ints
+    columns = ['salary1', 'salary2', 'mean_household_income', 'n1', 'n2']
+    df[columns] = df[columns].astype(int)
+    # currency
+    columns = ['salary1', 'salary2', 'mean_household_income']
+    def moneyfmt(x): return locale.currency(x, True, True) if x else ''
+    df['salary1_$'] = df.salary1.apply(moneyfmt)
+    df['salary2_$'] = df.salary2.apply(moneyfmt)
+    df['mean_household_income_$'] = df.mean_household_income.apply(moneyfmt)
+    return df
+
+def get_query_url(df):
+    API = 'http://www.indeed.com/jobs?'
+    query1 = 'q=' + df.job1 + '&l=' + df.city + ' ' + df.state
+    #query1 = query1.strip().lower().replace(' ','+')
+    df['query_url1'] = API + query1
+    query2 = 'q=' + df.job2 + '&l=' + df.city + ' ' + df.state
+    df['query_url2'] = API + query2
+    return df

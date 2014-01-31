@@ -1,4 +1,3 @@
-#import locale
 import model
 import os, json
 from flask import Flask, render_template, request
@@ -6,11 +5,11 @@ import MySQLdb as mdb
 
 app = Flask(__name__)
 db = mdb.connect(user="root", host="localhost", port=3306, db="demo")
-#cities_table = 'cities3'
-#jobs_table = 'jobs_cities2'
+cities_table = 'cities4'
+JOBS_TABLE = 'postings'#jobs_cities2'
 #weights = {'salary_f': 0.6, 'n1_f': 0.2, 'n2_f': 0.2}
 output = ['city', 'latitude', 'longitude', 'url', 'description']
-n_cities = 10
+n_cities = 20
 
 @app.route("/")
 def hello():
@@ -20,12 +19,13 @@ def hello():
 def slideshow():
     return render_template('slideshow.html')
 
-#locale.currency(df.T.to_dict().values()[0]['salary1'], True, True)
 @app.route("/_exp")
 def exp():
-    keys = ['url', 'name', 'description', 'image_url', 'count', 'nbackers',
-               'count', 'prediction']
-    results = [dict(zip(keys, ['%d'%i]*len(keys))) for i in range(1,4)]
+    #keys = ['url', 'name', 'description', 'image_url', 'count', 'nbackers',
+     #          'count', 'prediction']
+    #results = [dict(zip(keys, ['%d'%i]*len(keys))) for i in range(1,4)]
+    df = model.get_cities().reset_index()
+    results = df.T.to_dict().values()[:n_cities]
     return render_template('exp_cards.html', results=results)
     #return render_template('exp_sliders.html', results=results)
 
@@ -49,6 +49,24 @@ def waypoints():
     print cities
     return json.dumps(cities)
     #return cities.to_json(orient='split')#json.dumps(list(cities))#address)
+
+def jobs(table=JOBS_TABLE):
+    """Return list of projects."""
+    query = 'select job from %s group by job' %table
+    df = read_query(query)
+    return json.dumps(df.job.values.tolist())
+
+# I have a dictionary that holds functions
+# that respond to json requests
+JSON = {
+    'jobs': jobs,
+}
+
+# jobs function is called here
+@app.route("/json/<what>")
+def ajson(what):
+
+    return JSON[what]()
 
 @app.route('/<pagename>')
 def regularpage(pagename=None):
