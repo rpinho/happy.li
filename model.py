@@ -35,29 +35,29 @@ select p1.job as job1, p2.job as job2,
 from
     (select city, state, formattedLocation, count(*) as n_sum
     from postings
-    where job in ('%(job1)s', '%(job2)s')
+    where job in (%(job1)s, %(job2)s)
     group by formattedLocation) as p
     left outer join
     (select job, city, state, formattedLocation, count(*) as n1
     from postings
-    where job = '%(job1)s'
+    where job = %(job1)s
     group by formattedLocation) as p1
     on p.formattedLocation = p1.formattedLocation
     left outer join
     (select job, city, state, formattedLocation, count(*) as n2
     from postings
-    where job = '%(job2)s'
+    where job = %(job2)s
     group by formattedLocation) as p2
     on p.formattedLocation = p2.formattedLocation
     left outer join
     (select city, state, salary
     from jobs_cities2
-    where job = '%(job1)s') as j1
+    where job = %(job1)s) as j1
     on p1.city = j1.city and p1.state = j1.state
     left outer join
     (select city, state, salary
     from jobs_cities2
-    where job = '%(job2)s') as j2
+    where job = %(job2)s) as j2
     on p2.city = j2.city and p2.state = j2.state
     inner join cities4 c
     on p1.city = c.city and p1.state = c.state
@@ -70,7 +70,7 @@ def get_cities(job1=job1, job2=job2, weights=weights, query=query,
     print job1, job2
 
     # query db
-    df = sql.frame_query(query %locals(), db)
+    df = sql.read_frame(query, db, params={'job1':job1, 'job2': job2})
 
     # NaN
     df.fillna(nan_values, inplace=True)

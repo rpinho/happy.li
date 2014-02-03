@@ -61,7 +61,7 @@ def waypoints():
 def jobs(table=JOBS_TABLE):
     """Return list of projects."""
     query = 'select job from %s group by job' %table
-    df = model.sql.frame_query(query, db)
+    df = model.sql.read_frame(query, db)
     return json.dumps(df.job.values.tolist())
 
 # I have a dictionary that holds functions
