@@ -9,7 +9,7 @@ cities_table = 'cities4'
 JOBS_TABLE = 'postings'#jobs_cities2'
 #weights = {'salary_f': 0.6, 'n1_f': 0.2, 'n2_f': 0.2}
 output = ['city', 'latitude', 'longitude', 'image_url', 'description']
-n_cities = 20
+n_cities = 10
 
 @app.route("/")
 def hello():
@@ -35,10 +35,18 @@ def maps():
     job2 = request.args.get('job2', None, type=str)
     return render_template('maps.html', job1=job1, job2=job2)
 
+@app.route('/results')
+def results():
+    job1 = request.args.get('job1')
+    job2 = request.args.get('job2')
+    df = model.get_cities(job1, job2).reset_index()
+    results = df.T.to_dict().values()[:n_cities]
+    return render_template('results.html', results=results)
+
 @app.route('/waypoints')
 def waypoints():
-    job1 = request.args.get('job1', None, type=str);# job1='data scientist';
-    job2 = request.args.get('job2', None, type=str);# job2='psychologist';
+    job1 = request.args.get('job1', None, type=str)
+    job2 = request.args.get('job2', None, type=str)
     df = model.get_cities(job1, job2)#, weights, jobs_table, cities_table, db)
     df = df.reset_index()#df = df[output].head(n_cities)
     cities = []

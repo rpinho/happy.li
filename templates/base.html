@@ -26,7 +26,8 @@
     <!-- Sliders from Jenelle -->
     <link href="static/css/slider.css" rel="stylesheet">
 
-    <link href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" rel="stylesheet">
+    <!-- Autocomplete from Jun -->
+    <link href="static/css/jquery-ui.min.css" rel="stylesheet">
 
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
@@ -95,9 +96,11 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="static/js/jquery-1.10.2.min.js"></script>
-    <script src="static/js/jquery-ui.min.js"></script>
     <script src="static/js/bootstrap.min.js"></script>
     <script src="static/js/data.js"></script>
+
+    <!-- Autocomplete from Jun -->
+    <script src="static/js/jquery-ui.min.js"></script>
 
     <!-- Autocomplete from Ahmet -->
     <script src="static/js/typeahead.min.js"></script>
@@ -113,6 +116,17 @@
       $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     </script>
 
+<!--
+    <script>
+      $("#job1").typeahead({
+      name: 'job1',
+      //prefetch: '/q?jobs=B',
+      remote: '/json/jobs?q=%QUERY',
+      limit: 10
+      });
+    </script>
+    -->
+
     <script>
       $(function() {
       $("#job1").autocomplete({
@@ -125,11 +139,13 @@
       });
       });
     </script>
+
     <script>
       $(function(){
       $("#includeCards").load("cards.html");
       });
     </script>
+    -->
 
     {% block scripts %}{% endblock %}
 
