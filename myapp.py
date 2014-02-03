@@ -60,8 +60,10 @@ def waypoints():
 
 def jobs(table=JOBS_TABLE):
     """Return list of projects."""
-    query = 'select job from %s group by job' %table
-    df = model.sql.read_frame(query, db)
+    job = request.args.get('term').strip(';')
+    query = "select job from {0} where job like '%{1}%' group by job"
+    #params={'table':table, 'job':job})
+    df = model.sql.read_frame(query.format(table, job), db)
     return json.dumps(df.job.values.tolist())
 
 # I have a dictionary that holds functions
@@ -90,4 +92,4 @@ def regularpage(pagename=None):
 
 if __name__ == '__main__':
     print "Starting debugging server."
-    app.run(debug=True, host='localhost', port=8000)
+    app.run(debug=True, host='localhost')#, port=8000)

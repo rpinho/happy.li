@@ -17,8 +17,8 @@
     <link href="static/css/starter-template.css" rel="stylesheet">
 
     <!-- Cards from http://aozora.github.io/bootplus/plus.html -->
-    <link href="static/css/bootplus.css" rel="stylesheet">
-    <link href="static/css/bootplus-responsive.css" rel="stylesheet">
+    <link href="static/css/bootplus.min.css" rel="stylesheet">
+    <link href="static/css/bootplus-responsive.min.css" rel="stylesheet">
 
     <!-- Autocomplete from Ahmet -->
     <link href="static/css/typeahead.css" rel="stylesheet">
@@ -67,7 +67,7 @@
 
   <body>
 
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="navbar navbar-fixed-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -130,7 +130,7 @@
     <script>
       $(function() {
       $("#job1").autocomplete({
-      source: '/json/jobs?q=%QUERY'
+      source: '/json/jobs'
       });
       });
       $(function() {
@@ -145,7 +145,6 @@
       $("#includeCards").load("cards.html");
       });
     </script>
-    -->
 
     {% block scripts %}{% endblock %}
 
