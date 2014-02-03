@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block head %}{% endblock %}
+
+{% block content %}
+
+{% if results %}
+<div id="login_form">
+  <div style="margin:10px;border-width:10px;">
+    <div id="cards" style="overflow-y: auto; height:600px;">
+      {% for result in results%}
+      <div class="card hovercard">
+        <img src="{{ result['image_url'] }}" alt=""/>
+        <div class="info">
+          <div class="title">{{ result['city'] }}</div>
+          median household income {{ result['mean_household_income_$'] }}
+          <div class="twocolumns">
+            <strong>{{ result['job1'] }}</strong><br>
+            {{ result['salary1_$'] }}<br>
+            {{ result['n1'] }}+ jobs<br>
+            <div class="bottom">
+              <button class="btn">
+                <a target="_blank" href="{{ result['query_url1'] }}">Search</a>
+              </button>
+            </div>
+            <strong>{{ result['job2'] }}</strong><br>
+            {{ result['salary2_$'] }}<br>
+            {{ result['n2'] }}+ jobs
+            <div class="bottom">
+              <button class="btn">
+                <a target="_blank" href="{{ result['query_url2'] }}">Search</a>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!--
+<div class="card people">
+   <div class="card-top green">
+      <a href="#">
+         <img src="assets/img/silhouette_homer.png" alt=""/>
+      </a>
+   </div>
+   <div class="card-info">
+      <a class="title" href="#">Homer Simpson</a>
+      <div class="desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
+   </div>
+   <div class="card-bottom">
+      <button class="btn btn-block">Follow</button>
+   </div>
+</div>
+
+
+{% if results %}
+<div id="mycontainer" class="projectcontainer">
+  {% for result in results%}
+  <div class="item btn btn-large btn-success results project"
+       onclick="window.open('{{  result['url']  }}','mywindow');" style="cursor: hand;">
+    <h4 class="name">{{  result['name']  }}</h2>
+<p class="description">{{ result['description'] }}</p>
+<img src="{{ result['image_url'] }}" width="300">
+<p class="nconnections" style="display:none">{{  result['count']  }}</p>
+<p class="nbackers" style="display:none">{{ result['nbackers'] }}</p>
+<p class="normconn" style="display:none">{{  result['count']  }}</p>
+<p class="prediction" style="display:none">{{  result['prediction']  }}</p>
+<h5 class="prediction_disp">{{  result['prediction']  }}% chance of success</h5>
+</div>
+<br>
+
+{% endfor %}
+</div>
+{% endif %}
+-->
+
+{% endblock %}
+
+{% block scripts %}
+
+<script type="text/javascript">
+    function test_func(results) {
+        console.log(results);
+    }
+    test_func({{ results|safe }})
+</script>
+
+{% endblock %}

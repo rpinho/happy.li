@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<div id="login_form">
+  <div style="margin:10px;border-width:10px;">
+
+    <!-- Cards -->
+    {% if results %}
+    <div id="cards" style="overflow-y: auto; height:600px;">
+      {% for result in results%}
+      <div class="card hovercard">
+        <img src="{{ result['image_url'] }}" alt=""/>
+        <div class="info">
+          <div class="title">{{loop.index }}. {{ result['city'] }}</div>
+          median household income {{ result['mean_household_income_$'] }}
+          <div class="twocolumns">
+            <strong>{{ result['job1'] }}</strong><br>
+            {{ result['salary1_$'] }}<br>
+            {{ result['n1'] }}+ jobs<br>
+            <div class="bottom">
+              <button class="btn">
+                <a target="_blank" href="{{ result['query_url1'] }}">Search</a>
+              </button>
+            </div>
+            <strong>{{ result['job2'] }}</strong><br>
+            {{ result['salary2_$'] }}<br>
+            {{ result['n2'] }}+ jobs
+            <div class="bottom">
+              <button class="btn">
+                <a target="_blank" href="{{ result['query_url2'] }}">Search</a>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- New Search Button trigger modal -->
+    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">New Search</button>
+  </div>
+</div>
+
+<!-- Google Maps -->
+<div id="map-canvas"></div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">New Search</h4>
+      </div>
+      <div class="modal-body">
+    <!--- Box where user inputs restaurant, has name restaurant_type -->
+    <input id="job1" type="text" class="input-medium" placeholder="Job title - Partner A" size="10">
+    <!--- Box where user inputs allowed distance, has name miles -->
+    <input id="job2" type="text" class="input-medium" placeholder="Job title - Partner B" size="10">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button id="find_button" type="button" class="btn btn-primary" data-dismiss="modal">New search</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+  // Search send (press enter) - jquery
+  // Wait til page load is ready
+  $(document).ready(function(){
+  console.log( "ready!" );
+  //getWaypoints("{{results[0]['job1']}}", "{{results[0]['job2']}}");
+  getMarkers({{results|tojson|safe}});
+  //When the button with id find_button is clicked then do these actions
+  $('#find_button').click(function() {
+  //Collect the values in the form fields
+  var job1 = $('#job1').val();
+  var job2 = $('#job2').val();
+  //Clear the carts container
+  $("#cards").empty()
+  //Call the getWaypoints function in data.js with the input values
+  getWaypoints(job1, job2);
+  });
+  });
+</script>
+
+{% endblock %}
