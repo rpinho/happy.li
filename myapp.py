@@ -41,6 +41,10 @@ def results():
     job1 = request.args.get('job1')
     job2 = request.args.get('job2')
     db = mdb.connect(user="root", host="localhost", port=3306, db="demo")
+    if jobNotInDb(job1, db):
+        return "%s not in the database yet." %job1.title()
+    elif jobNotInDb(job2, db):
+        return "%s not in the database yet." %job2.title()
     df = model.get_cities(job1, job2, db=db).reset_index()
     results = df.T.to_dict().values()[:n_cities]
     return render_template('results.html', results=results)
@@ -81,6 +85,11 @@ JSON = {
 def ajson(what):
 
     return JSON[what]()
+
+def jobNotInDb(job, db):
+    query = 'select * from postings where job=%(job)s'
+    df = model.sql.frame_query(query, db, params={'job':job})
+    return df.empty
 
 @app.route('/<pagename>')
 def regularpage(pagename=None):
