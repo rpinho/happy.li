@@ -13,6 +13,7 @@ n_cities = 10
 
 @app.route("/")
 def hello():
+    db = mdb.connect(user="root", host="localhost", port=3306, db="demo")
     return render_template('index.html')
 
 @app.route("/slideshow")
@@ -39,7 +40,8 @@ def maps():
 def results():
     job1 = request.args.get('job1')
     job2 = request.args.get('job2')
-    df = model.get_cities(job1, job2).reset_index()
+    db = mdb.connect(user="root", host="localhost", port=3306, db="demo")
+    df = model.get_cities(job1, job2, db=db).reset_index()
     results = df.T.to_dict().values()[:n_cities]
     return render_template('results.html', results=results)
 
