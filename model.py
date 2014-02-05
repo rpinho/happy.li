@@ -67,6 +67,8 @@ order by adj_salary, salary_sum, n_sum, salary_diff, n_diff;
 def get_cities(job1=job1, job2=job2, weights=weights, query=query,
                jobs_table=jobs_table, cities_table=cities_table, db=db):
 
+    db = mdb.connect(user="root", host="localhost", port=3306, db="demo")
+
     print job1, job2
 
     # query db
