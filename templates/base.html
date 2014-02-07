@@ -17,16 +17,17 @@
     <link href="static/css/starter-template.css" rel="stylesheet">
 
     <!-- Cards from http://aozora.github.io/bootplus/plus.html -->
-    <link href="static/css/bootplus.min.css" rel="stylesheet">
-    <link href="static/css/bootplus-responsive.min.css" rel="stylesheet">
+    <link href="static/css/cards.css" rel="stylesheet">
+    <!-- <link href="static/css/bootplus.min.css" rel="stylesheet"> -->
+    <!-- <link href="static/css/bootplus-responsive.min.css" rel="stylesheet"> -->
 
-    <!-- Autocomplete from Ahmet -->
-    <link href="static/css/typeahead.css" rel="stylesheet">
+    <!-- Typeahead's autocomplete -->
+    <!-- <link href="static/css/typeahead.css" rel="stylesheet"> -->
 
-    <!-- Sliders from Jenelle -->
-    <link href="static/css/slider.css" rel="stylesheet">
+    <!-- Sliders -->
+    <!-- <link href="static/css/slider.css" rel="stylesheet"> -->
 
-    <!-- Autocomplete from Jun -->
+    <!-- Jquery's autocomplete -->
     <link href="static/css/jquery-ui.min.css" rel="stylesheet">
 
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
@@ -44,18 +45,43 @@
       margin: 0px;
       padding: 0px
       }
-      .twocolumns
-      {
+      .twocolumns {
       column-count:2;
       -moz-column-count:2; /* Firefox */
       -webkit-column-count:2; /* Safari and Chrome */
       }
-      .ui-autocomplete { max-height: 200px; overflow-y: scroll; overflow-x: hidden;}
-
-      #map-canvas {height: 100%; float: right; width: 68%; margin-top:60px}
-      #output_results {height: 100%; float: left; width: 28%; margin-top: 50px; margin-left:40px; border-width:10px;}
-      #login_form {height: 100%; float: left; width: 100%; margin-top:50px; margin-left:85px}}
-      #sliders {height: 85%; margin: 20px; float: left; width: 28%; margin-top:30px}
+      .ui-autocomplete {
+      max-height: 200px;
+      overflow-y: scroll;
+      overflow-x: hidden;}
+      #map-canvas {
+      height: 100%;
+      float: right;
+      width: 68%;
+      margin-top:60px
+      }
+      #output_results {
+      height: 100%;
+      float: left;
+      width: 28%;
+      margin-top: 50px;
+      margin-left:40px;
+      border-width:10px;
+      }
+      #login_form {
+      height: 100%;
+      float: left;
+      width: 100%;
+      margin-top:50px;
+      margin-left:85px
+      }
+      #sliders {
+      height: 85%;
+      margin: 20px;
+      float: left;
+      width: 28%;
+      margin-top:30px
+      }
       #label {
       color: white;
       font-size: 400%;
@@ -63,6 +89,14 @@
       padding: 1em;
       background-color: rgba(0, 0, 0, 0.4);
       margin-top: 2em;
+      }
+      /* commenting out the remaining CSS
+      input {
+      padding: 1.4em !important;
+      font-size: 140% !important;
+      }
+      .btn {
+      height: inherit !important;
       }
       }
       #footer {
@@ -74,6 +108,8 @@
       Bottom: 0;
       Height: 75px;  /* This value is the height of your footer */
       }
+      */
+      -->
     </style>
 
     <script type="text/javascript"
@@ -116,26 +152,29 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="static/js/jquery-1.10.2.min.js"></script>
     <script src="static/js/bootstrap.min.js"></script>
+
+    <!-- My javascript functions -->
     <script src="static/js/data.js"></script>
 
-    <!-- Autocomplete from Jun -->
+    <!-- Autocomplete -->
     <script src="static/js/jquery-ui.min.js"></script>
 
-    <!-- Autocomplete from Ahmet -->
-    <script src="static/js/typeahead.min.js"></script>
+    <!-- Autocomplete -->
+    <!-- <script src="static/js/typeahead.min.js"></script> -->
 
-    <!-- Isotope from Michael -->
-    <script src="static/js/jquery.isotope.js"></script>
+    <!-- Sliders -->
+    <!-- <script src="/static/js/bootstrap-slider.js"></script> -->
 
-    <!-- Sliders from Jenelle -->
-    <script src="/static/js/bootstrap-slider.js"></script>
+    <!-- Isotope for instant js update of card order after moving sliders -->
+    <!-- <script src="static/js/jquery.isotope.js"></script> -->
 
-    <!-- ? from Michael -->
+    <!-- ? from Mike -->
     <script type=text/javascript>
       $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     </script>
 
-<!--
+    <!-- Not using typeahead. Using jquery's autocomplete instead -->
+    <!--
     <script>
       $("#job1").typeahead({
       name: 'job1',
@@ -146,6 +185,7 @@
     </script>
     -->
 
+    <!-- jquery's autocomplete -->
     <script>
       $(function() {
       $("#job1").autocomplete({
@@ -154,16 +194,18 @@
       });
       $(function() {
       $("#job2").autocomplete({
-      source: '/json/jobs?q=%QUERY'
+      source: '/json/jobs'
       });
       });
     </script>
 
+    <!--
     <script>
       $(function(){
       $("#includeCards").load("cards.html");
       });
     </script>
+    -->
 
     {% block scripts %}{% endblock %}
 

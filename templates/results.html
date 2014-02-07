@@ -12,22 +12,32 @@
         <div class="info">
           <div class="title">{{loop.index }}. {{ result['city'] }}</div>
           median household income {{ result['mean_household_income_$'] }}
-          <div class="twocolumns">
-            <strong>{{ result['job1'] }}</strong><br>
-            {{ result['salary1_$'] }}<br>
-            {{ result['n1'] }}+ jobs<br>
-            <div class="bottom">
-              <button class="btn">
-                <a target="_blank" href="{{ result['query_url1'] }}">Search</a>
-              </button>
+          <div class="row">
+            <div class="col-xs-6"><strong>{{ result['job1'] }}</strong></div>
+            <div class="col-xs-6"><strong>{{ result['job2'] }}</strong></div>
+          </div>
+          <div class="row">
+            <div class="col-xs-6">{{ result['salary1_$'] }}</div>
+            <div class="col-xs-6">{{ result['salary2_$'] }}</div>
+          </div>
+          <div class="row">
+            <div class="col-xs-6">{{ result['n1'] }}+ jobs</div>
+            <div class="col-xs-6">{{ result['n2'] }}+ jobs</div>
+          </div>
+          <div class="row">
+            <div class="col-xs-6">
+              <div class="bottom">
+                <button class="btn btn-default">
+                  <a target="_blank" href="{{ result['query_url1'] }}">Search</a>
+                </button>
+              </div>
             </div>
-            <strong>{{ result['job2'] }}</strong><br>
-            {{ result['salary2_$'] }}<br>
-            {{ result['n2'] }}+ jobs
-            <div class="bottom">
-              <button class="btn">
-                <a target="_blank" href="{{ result['query_url2'] }}">Search</a>
-              </button>
+            <div class="col-xs-6">
+              <div class="bottom">
+                <button class="btn btn-default">
+                  <a target="_blank" href="{{ result['query_url2'] }}">Search</a>
+                </button>
+              </div>
             </div>
           </div>
         </div>
