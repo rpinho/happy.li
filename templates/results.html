@@ -1,6 +1,8 @@
 {% extends "base.html" %}
-{% block content %}
 
+{% block head %}{% endblock %}
+
+{% block content %}
 
 <div id="output_results">
     <!-- Cards -->
@@ -45,8 +47,8 @@
       {% endfor %}
     </div>
     {% endif %}
-
-    <!-- New Search Button trigger modal -->
+    <br>
+    <!-- New Search button -->
     <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">New Search</button>
 </div>
 
@@ -63,13 +65,13 @@
       </div>
       <div class="modal-body">
     <!--- Box where user inputs restaurant, has name restaurant_type -->
-    <input id="job1" type="text" class="input-medium" placeholder="Job title - Partner A" size="10">
+    <input id="job1" type="text" class="input-lg" placeholder="Job title - Partner A">
     <!--- Box where user inputs allowed distance, has name miles -->
-    <input id="job2" type="text" class="input-medium" placeholder="Job title - Partner B" size="10">
+    <input id="job2" type="text" class="input-lg" placeholder="Job title - Partner B">
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button id="find_button" type="button" class="btn btn-primary" data-dismiss="modal">New search</button>
+        <button type="button" class="btn btn-danger btn-lg" data-dismiss="modal">Close</button>
+        <button id="find_button" type="button" class="btn btn-success btn-lg" data-dismiss="modal">New search</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
@@ -94,7 +96,8 @@
   //Clear the carts container
   $("#cards").empty()
   //Call the getWaypoints function in data.js with the input values
-  getWaypoints(job1, job2);
+  //getWaypoints(job1, job2);
+  window.location.href = "results?job1="+job1+"&job2="+job2
   });
   });
 </script>
