@@ -1,5 +1,7 @@
 import model
-import os, json
+import os
+import logging
+import json
 from flask import Flask, render_template, request
 
 app = Flask(__name__)
@@ -35,12 +37,18 @@ def maps():
 def results():
     job1 = request.args.get('job1')
     job2 = request.args.get('job2')
+
+    # print query to log file
+    queryLogging(job1, job2)
+
     if jobNotInDb(job1):
-        return "Sorry, %s not in the database yet." %job1.title()
+        return jobNotInDbMessage(job1)
     elif jobNotInDb(job2):
-        return "Sorry, %s not in the database yet." %job2.title()
+        return jobNotInDbMessage(job2)
+
     df = model.get_cities(job1, job2).reset_index()
     results = df.T.to_dict().values()[:n_cities]
+
     return render_template('results.html', results=results)
 
 @app.route('/waypoints')
@@ -83,6 +91,15 @@ def jobNotInDb(job):
     sql = 'select * from postings where job=%(job)s'
     df = model.db.read_sql(sql, params={'job':job})
     return df.empty
+
+def jobNotInDbMessage(job):
+    #logging.basicConfig(filename='jobNotInDb.log', format='%(message)s')
+    #logging.debug('%s', job)
+    return "Sorry, %s not in the database yet." %job.title()
+
+def queryLogging(job1, job2):
+    logging.basicConfig(filename='queries.log')#, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
+    logging.info('%s, %s', job1, job2)
 
 @app.route('/<pagename>')
 def regularpage(pagename=None):
