@@ -1,19 +1,14 @@
 import model
 import os, json
 from flask import Flask, render_template, request
-import MySQLdb as mdb
 
 app = Flask(__name__)
-db = mdb.connect(user="root", host="localhost", port=3306, db="demo")
 cities_table = 'cities4'
 JOBS_TABLE = 'postings'#jobs_cities2'
-#weights = {'salary_f': 0.6, 'n1_f': 0.2, 'n2_f': 0.2}
-output = ['city', 'latitude', 'longitude', 'image_url', 'description']
 n_cities = 10
 
 @app.route("/")
 def hello():
-    db = mdb.connect(user="root", host="localhost", port=3306, db="demo")
     return render_template('index.html')
 
 @app.route("/slideshow")
@@ -40,12 +35,11 @@ def maps():
 def results():
     job1 = request.args.get('job1')
     job2 = request.args.get('job2')
-    db = mdb.connect(user="root", host="localhost", port=3306, db="demo")
-    if jobNotInDb(job1, db):
-        return "%s not in the database yet." %job1.title()
-    elif jobNotInDb(job2, db):
-        return "%s not in the database yet." %job2.title()
-    df = model.get_cities(job1, job2, db=db).reset_index()
+    if jobNotInDb(job1):
+        return "Sorry, %s not in the database yet." %job1.title()
+    elif jobNotInDb(job2):
+        return "Sorry, %s not in the database yet." %job2.title()
+    df = model.get_cities(job1, job2).reset_index()
     results = df.T.to_dict().values()[:n_cities]
     return render_template('results.html', results=results)
 
@@ -65,11 +59,10 @@ def waypoints():
     #return cities.to_json(orient='split')#json.dumps(list(cities))#address)
 
 def jobs(table=JOBS_TABLE):
-    """Return list of projects."""
+    """Return list of jobs."""
     job = request.args.get('term').strip(';')
-    query = "select job from {0} where job like '%{1}%' group by job"
-    #params={'table':table, 'job':job})
-    df = model.sql.read_frame(query.format(table, job), db)
+    sql = "select job from {0} where job like '%{1}%' group by job"
+    df = model.db.read_sql(sql.format(table, job))
     return json.dumps(df.job.values.tolist())
 
 # I have a dictionary that holds functions
@@ -86,9 +79,9 @@ def ajson(what):
 
     return JSON[what]()
 
-def jobNotInDb(job, db):
-    query = 'select * from postings where job=%(job)s'
-    df = model.sql.frame_query(query, db, params={'job':job})
+def jobNotInDb(job):
+    sql = 'select * from postings where job=%(job)s'
+    df = model.db.read_sql(sql, params={'job':job})
     return df.empty
 
 @app.route('/<pagename>')

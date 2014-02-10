@@ -5,4 +5,3 @@ from wtforms.validators import Required
 class LoginForm(Form):
     job1 = TextField('job1', validators = [Required()])
     job2 = TextField('job2', validators = [Required()])
-    #housing = SelectField('Rent or Buy?', choices = [('rent','Rent'),('buy','Buy')])

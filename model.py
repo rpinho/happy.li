@@ -1,7 +1,9 @@
 import locale
-from pandas.io import sql
-import MySQLdb as mdb
+import itertools
 from pandas.compat.scipy import percentileofscore
+
+# my db wrappers around pandas' sql wrappers
+import scrapers.db_functions as db
 
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8' )
 
@@ -12,14 +14,10 @@ columns = [u'salary_sum', u'salary_diff', u'adj_salary',
            u'n_sum', u'n_diff']
 weights = [0, 0, 0.4, 0.6, -0.3]
 weights = dict(zip(columns, weights))
-#weights = {'salary_f': 0.8, 'n1_f': 0.1, 'n2_f': 0.1}
-jobs_table = 'jobs_cities2'
-cities_table = 'cities3'
-db = mdb.connect(user="root", host="localhost", port=3306, db="demo")
 nan_values = {'job1':'', 'job2':'', 'salary1':0, 'salary2':0, 'n1':0, 'n2':0,
               'description':'', 'image_url':''}
 
-query = """
+sql = """
 select p1.job as job1, p2.job as job2,
     p.city, p.state,
     j1.salary as salary1, j2.salary as salary2,
@@ -51,12 +49,12 @@ from
     on p.formattedLocation = p2.formattedLocation
     left outer join
     (select city, state, salary
-    from jobs_cities2
+    from salary
     where job = %(job1)s) as j1
     on p1.city = j1.city and p1.state = j1.state
     left outer join
     (select city, state, salary
-    from jobs_cities2
+    from salary
     where job = %(job2)s) as j2
     on p2.city = j2.city and p2.state = j2.state
     inner join cities4 c
@@ -64,13 +62,12 @@ from
 order by adj_salary, salary_sum, n_sum, salary_diff, n_diff;
 """
 
-def get_cities(job1=job1, job2=job2, weights=weights, query=query,
-               jobs_table=jobs_table, cities_table=cities_table, db=db):
+def get_cities(job1=job1, job2=job2, weights=weights, sql=sql):
 
     print job1, job2
 
     # query db
-    df = sql.read_frame(query, db, params={'job1':job1, 'job2': job2})
+    df = db.read_sql(sql, params={'job1':job1, 'job2': job2})
 
     # NaN
     df.fillna(nan_values, inplace=True)
@@ -79,6 +76,7 @@ def get_cities(job1=job1, job2=job2, weights=weights, query=query,
     #df['salary_f'] = df.adj_salary - df.adj_salary.min()
     #df['salary_f'] = df.salary_f / df.salary_f.sum()
 
+    # normalize between 0 and 1 with percentile rank
     for name in weights.keys():
         df[name] = df[name].apply(lambda x: percentileofscore(df[name], x)/100)
 
@@ -115,3 +113,12 @@ def get_query_url(df):
     query2 = 'q=' + df.job2 + '&l=' + df.city + ' ' + df.state
     df['query_url2'] = API + query2
     return df
+
+#
+def get_top_cities_from_db(n=20):
+    jobs = db.get_jobs_from_db()
+    cities = []
+    for job1, job2 in itertools.product(jobs.job.values, jobs.job.values):
+        df = get_cities(job1, job2).head(n)
+        cities.extend((df.city + ', ' + df.state).values)
+    return cities
