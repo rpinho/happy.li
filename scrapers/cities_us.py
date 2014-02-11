@@ -2,6 +2,8 @@ import pandas as pd
 import re
 import locale
 import socket
+import collections
+import itertools
 import requests
 from bs4 import BeautifulSoup
 
@@ -185,3 +187,19 @@ def save_image_locally(url, path='happy.li/static/img/'):
         if response.ok:
             outfile.write(response.content)
     session.close()
+
+#
+def create_top_cities_from_db(n=20):
+    jobs = db.get_jobs_from_db()
+    cities = []
+    for job1, job2 in itertools.product(jobs.job.values, jobs.job.values):
+        df = get_cities(job1, job2).head(n)
+        cities.extend((df.city + ', ' + df.state).values)
+
+    c = collections.Counter(cities)
+    city = [s.split(', ')[0] for s in c.keys()]
+    state = [s.split(', ')[1] for s in c.keys()]
+    d = {'city':city, 'state':state, 'top20':c.values()}
+    top_cities = pd.DataFrame(d)
+    db.to_sql(top_cities, 'top20')
+    return top_cities

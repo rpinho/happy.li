@@ -56,3 +56,11 @@ def get_jobs_from_db():
 def get_country_codes_from_db():
     sql = 'select distinct(Code) from mercer_quality_of_living_2012 as mercer inner join country_codes as country on country.Country = mercer.Country order by mercer.Rank'
     return db.read_sql(sql)
+
+def get_top_cities_from_db():
+    sql = """
+    (select * from top_cities order by n_postings desc limit 30)
+    UNION
+    (select * from top_cities order by top20 desc limit 20)
+    """
+    return db.read_sql(sql)

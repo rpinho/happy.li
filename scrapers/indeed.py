@@ -177,6 +177,9 @@ def update_salaries(jobs=[], cities=[], df=[], table='salary', verbose_=True):
         jobs = pd.read_csv(PATH + 'jobs.txt')
         jobs.job = jobs.job.str.title()
 
+    elif type(jobs) is str:
+        jobs = pd.DataFrame({'job':[jobs]})
+
     if not any(cities):
         cities = db.get_cities_from_db()
 
@@ -240,6 +243,9 @@ def update_postings(jobs=[], cities=[], table='postings'):
     if not any(jobs):
         jobs = pd.read_csv(PATH + 'jobs.txt')
         jobs.job = jobs.job.str.title()
+
+    elif type(jobs) is str:
+        jobs = pd.DataFrame({'job':[jobs]})
 
     if not any(cities):
         cities = db.get_cities_from_db()

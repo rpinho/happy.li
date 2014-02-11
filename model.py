@@ -113,12 +113,3 @@ def get_query_url(df):
     query2 = 'q=' + df.job2 + '&l=' + df.city + ' ' + df.state
     df['query_url2'] = API + query2
     return df
-
-#
-def get_top_cities_from_db(n=20):
-    jobs = db.get_jobs_from_db()
-    cities = []
-    for job1, job2 in itertools.product(jobs.job.values, jobs.job.values):
-        df = get_cities(job1, job2).head(n)
-        cities.extend((df.city + ', ' + df.state).values)
-    return cities

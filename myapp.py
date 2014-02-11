@@ -95,7 +95,7 @@ def jobNotInDb(job):
 def jobNotInDbMessage(job):
     #logging.basicConfig(filename='jobNotInDb.log', format='%(message)s')
     #logging.debug('%s', job)
-    return "Sorry, %s not in the database yet." %job.title()
+    return "Sorry, %s not in the database yet. Live search coming soon" %job.title()
 
 def queryLogging(job1, job2):
     logging.basicConfig(filename='queries.log')#, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
