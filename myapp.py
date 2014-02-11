@@ -4,6 +4,9 @@ import logging
 import json
 from flask import Flask, render_template, request
 
+# my helper functions for live scraping indeed.com
+import scrapers.indeed as indeed
+
 app = Flask(__name__)
 cities_table = 'cities4'
 JOBS_TABLE = 'postings'#jobs_cities2'
@@ -96,6 +99,13 @@ def jobNotInDbMessage(job):
     #logging.basicConfig(filename='jobNotInDb.log', format='%(message)s')
     #logging.debug('%s', job)
     return "Sorry, %s not in the database yet. Live search coming soon" %job.title()
+
+# live scraping indeed.com
+def updateDb(job):
+    # get top cities only for faster scraping
+    cities = model.db.get_top_cities_from_db()
+    indeed.update_postings(job, cities)
+    indeed.update_salaries(job, cities)
 
 def queryLogging(job1, job2):
     logging.basicConfig(filename='queries.log')#, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
