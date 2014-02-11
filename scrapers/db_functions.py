@@ -53,9 +53,9 @@ def get_jobs_from_db():
     sql = 'select job from postings group by job'
     return read_sql(sql)
 
-def get_country_codes_from_db():
-    sql = 'select distinct(Code) from mercer_quality_of_living_2012 as mercer inner join country_codes as country on country.Country = mercer.Country order by mercer.Rank'
-    return read_sql(sql)
+def get_cities_for_job(job):
+    sql = 'select city, state from postings where job=%(job)s group by city, state'
+    return read_sql(sql, params={'job':job})
 
 def get_top_cities_from_db():
     sql = """
@@ -63,4 +63,8 @@ def get_top_cities_from_db():
     UNION
     (select city, state from top_cities order by top20 desc limit 20)
     """
+    return read_sql(sql)
+
+def get_country_codes_from_db():
+    sql = 'select distinct(Code) from mercer_quality_of_living_2012 as mercer inner join country_codes as country on country.Country = mercer.Country order by mercer.Rank'
     return read_sql(sql)

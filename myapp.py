@@ -1,11 +1,16 @@
-import model
 import os
 import logging
 import json
 from flask import Flask, render_template, request
 
+# my db wrappers around pandas' sql wrappers
+import scrapers.db_functions as db
+
 # my helper functions for live scraping indeed.com
 import scrapers.indeed as indeed
+
+# my model: main sql query and weighted average
+import model
 
 app = Flask(__name__)
 cities_table = 'cities4'
@@ -78,7 +83,7 @@ def jobs(table=JOBS_TABLE):
     """Return list of jobs."""
     job = request.args.get('term').strip(';')
     sql = "select job from {0} where job like '%{1}%' group by job"
-    df = model.db.read_sql(sql.format(table, job))
+    df = db.read_sql(sql.format(table, job))
     return json.dumps(df.job.values.tolist())
 
 # I have a dictionary that holds functions
@@ -97,7 +102,7 @@ def ajson(what):
 
 def jobNotInDb(job):
     sql = 'select * from postings where job=%(job)s'
-    df = model.db.read_sql(sql, params={'job':job})
+    df = db.read_sql(sql, params={'job':job})
     return df.empty
 
 def jobNotInDbMessage(job):
@@ -110,9 +115,11 @@ def emptyStringMessage(partner):
 
 # live scraping indeed.com
 def updateDb(job):
-    # get top cities only for faster scraping
-    cities = model.db.get_top_cities_from_db()
+    # get top cities only for faster search
+    cities = db.get_top_cities_from_db()
     indeed.update_postings(job, cities)
+    # get only the cities that actually have postings for the job
+    cities = db.get_cities_for_job(job)
     indeed.update_salaries(job, cities)
 
 def queryLogging(job1, job2):
