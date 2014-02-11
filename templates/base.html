@@ -14,7 +14,7 @@
     <link href="static/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="static/css/starter-template.css" rel="stylesheet">
+    <!-- <link href="static/css/starter-template.css" rel="stylesheet"> -->
 
     <!-- Cards from http://aozora.github.io/bootplus/plus.html -->
     <link href="static/css/cards.css" rel="stylesheet">
@@ -88,26 +88,6 @@
       background-color: rgba(0, 0, 0, 0.4);
       margin-top: 2em;
       }
-      /* commenting out the remaining CSS
-      input {
-      padding: 1.4em !important;
-      font-size: 140% !important;
-      }
-      .btn {
-      height: inherit !important;
-      }
-      }
-      #footer {
-      Position: absolute;
-      text-align:center;
-      color:white;
-      font-size:250%;
-      Width: 100%;
-      Bottom: 0;
-      Height: 75px;  /* This value is the height of your footer */
-      }
-      */
-      -->
     </style>
 
     <script type="text/javascript"
@@ -136,7 +116,7 @@
             <li><a href="/">Home</a></li>
             <li><a href="/slideshow">Slides</a></li>
             <li><a href="http://github.com/rpinho/happy.li">GitHub</a></li>
-            <li><a href="http://www.linkedin.com/in/rpinho1">Contact</a></li>
+            <li><a href="http://www.linkedin.com/in/rpinho1">LinkedIn</a></li>
 
           </ul>
         </div><!--/.nav-collapse -->
@@ -167,7 +147,7 @@
     <!-- Isotope for instant js update of card order after moving sliders -->
     <!-- <script src="static/js/jquery.isotope.js"></script> -->
 
-    <!-- ? from Mike -->
+    <!-- ? -->
     <script type=text/javascript>
       $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     </script>
@@ -197,14 +177,6 @@
       });
       });
     </script>
-
-    <!--
-    <script>
-      $(function(){
-      $("#includeCards").load("cards.html");
-      });
-    </script>
-    -->
 
     {% block scripts %}{% endblock %}
 

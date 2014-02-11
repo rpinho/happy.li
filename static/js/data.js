@@ -22,7 +22,7 @@ function getMarkers(results) {
     drop()
 };
 
-// Javascript to get waypoints for a movie
+// Javascript to get waypoints for a job
 function getWaypoints(job1, job2) {
     //Log inputs to console
     console.log(("Input is job1 = " + job1 + ", job2 = " + job2));
