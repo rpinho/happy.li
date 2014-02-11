@@ -197,44 +197,74 @@ def update_salaries(jobs=[], cities=[], df=[], table='salary', verbose_=True):
     return df
 
 
+params = {'country':'US',
+          'radius':0,
+          'limit':25,
+          'latlong':1,
+          'format':'json',
+          'userip':IP,
+          'useragent':'Mozilla/%2F4.0%28Firefox%29',
+          'v':2,
+          'sort':None,
+          'st':None,
+          'fromage':None,
+          'filter':None,
+          'chnl':None}
+
 # from https://ads.indeed.com/jobroll/xmlfeed
 # state is 2-letter code
-def indeed_api(job, city, state, table='postings', country='US', r=0,
-               limit=25, save_=True, ip=IP):
+def indeed_api(job, city, state, table='postings', params=params, save_=True):
 
+    # columns to keep
     columns = [u'jobkey', u'job', u'jobtitle', u'company',
                u'city', u'state', u'formattedLocation', u'country',
                u'date', u'formattedRelativeTime',
                u'latitude', u'longitude', u'url']
+
+    # query
     location = ', '.join((city, state))
-    query = '&q="%(job)s"&l=%(location)s&co=%(country)s'
-    query += '&radius=%(r)s&limit=%(limit)s&latlong=1&format=json&userip=%(ip)s'
-    extra = '&useragent=Mozilla/%2F4.0%28Firefox%29&v=2'
-    extra += '&sort=&st=&jt=&fromage=&filter=&chnl='
-    url = API + query%locals() + extra
+    params['l'] = location
+    params['q'] = job
+
+    # first page of results (n=25)
+    params['start'] = 0
     session = requests.session()
-    response = session.get(url + '&start=0')
+    response = session.get(API, params=params)
     df = pd.DataFrame(response.json()['results'])
+
     if df.empty:
         return None
+
     df['job'] = job
+
     df.formattedRelativeTime = map(
         lambda x: int(x[0]), df.formattedRelativeTime.str.findall(r'[0-9].'))
+
     if save_:
         db.to_sql(df[columns], table, 'append')
+
     totalResults = response.json()['totalResults']
     print totalResults
+
+    # next pages of results
+    limit = params['limit']
     for start in range(limit+1, totalResults+limit+1, limit):
-        response = session.get(url + '&start=%d'%start)
+        params['start'] = start
+        response = session.get(API, params=params)
         df = pd.DataFrame(response.json()['results'])
+
         if df.empty:
             return None
+
         df['job'] = job
+
         df.formattedRelativeTime = map(
             lambda x: int(x[0]),
             df.formattedRelativeTime.str.findall(r'[0-9].'))
+
         if save_:
             db.to_sql(df[columns], table, 'append')
+
         print map(response.json().get, [u'start', u'end', u'pageNumber'])
 
 #
