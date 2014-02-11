@@ -44,10 +44,15 @@ def results():
     # print query to log file
     queryLogging(job1, job2)
 
+    if not job1:
+        return emptyStringMessage('A')
+    if not job2:
+        return emptyStringMessage('B')
+
     if jobNotInDb(job1):
-        return jobNotInDbMessage(job1)
-    elif jobNotInDb(job2):
-        return jobNotInDbMessage(job2)
+        updateDb(job1)#return jobNotInDbMessage(job1)
+    if jobNotInDb(job2):
+        updateDb(job2)#return jobNotInDbMessage(job2)
 
     df = model.get_cities(job1, job2).reset_index()
     results = df.T.to_dict().values()[:n_cities]
@@ -98,7 +103,10 @@ def jobNotInDb(job):
 def jobNotInDbMessage(job):
     #logging.basicConfig(filename='jobNotInDb.log', format='%(message)s')
     #logging.debug('%s', job)
-    return "Sorry, %s not in the database yet. Live search coming soon" %job.title()
+    return "Sorry, %s not in the database yet. Live search coming soon." %job.title()
+
+def emptyStringMessage(partner):
+    return "Please enter job title for partner %s." %partner
 
 # live scraping indeed.com
 def updateDb(job):

@@ -177,7 +177,8 @@ def update_salaries(jobs=[], cities=[], df=[], table='salary', verbose_=True):
         jobs = pd.read_csv(PATH + 'jobs.txt')
         jobs.job = jobs.job.str.title()
 
-    elif type(jobs) is str:
+    # jobs is unicode string
+    elif isinstance(jobs, basestring):
         jobs = pd.DataFrame({'job':[jobs]})
 
     if not any(cities):
@@ -274,7 +275,8 @@ def update_postings(jobs=[], cities=[], table='postings'):
         jobs = pd.read_csv(PATH + 'jobs.txt')
         jobs.job = jobs.job.str.title()
 
-    elif type(jobs) is str:
+    # jobs is unicode string
+    elif isinstance(jobs, basestring):
         jobs = pd.DataFrame({'job':[jobs]})
 
     if not any(cities):
