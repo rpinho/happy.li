@@ -175,11 +175,7 @@ def update_salaries(jobs=[], cities=[], df=[], table='salary', verbose_=True):
 
     if not any(jobs):
         jobs = pd.read_csv(PATH + 'jobs.txt')
-        jobs.job = jobs.job.str.title()
-
-    # jobs is unicode string
-    elif isinstance(jobs, basestring):
-        jobs = pd.DataFrame({'job':[jobs]})
+        #jobs.job = jobs.job.str.title()
 
     if not any(cities):
         cities = db.get_cities_from_db()
@@ -209,12 +205,13 @@ params = {'country':'US',
           'sort':None,
           'st':None,
           'fromage':None,
-          'filter':None,
+          'filter':1,
           'chnl':None}
 
 # from https://ads.indeed.com/jobroll/xmlfeed
 # state is 2-letter code
-def indeed_api(job, city, state, table='postings', params=params, save_=True):
+def indeed_api(job, city, state, table='postings', maxResults=1001,
+               source='backend',  params=params, save_=True):
 
     # columns to keep
     columns = [u'jobkey', u'job', u'jobtitle', u'company',
@@ -237,6 +234,10 @@ def indeed_api(job, city, state, table='postings', params=params, save_=True):
         return None
 
     df['job'] = job
+    df['indeed_city'] = df['city']
+    df['city'] = city
+    df['source'] = source
+    df['timestamp'] = pd.tslib.Timestamp.utcnow()
 
     df.formattedRelativeTime = map(
         lambda x: int(x[0]), df.formattedRelativeTime.str.findall(r'[0-9].'))
@@ -247,9 +248,18 @@ def indeed_api(job, city, state, table='postings', params=params, save_=True):
     totalResults = response.json()['totalResults']
     print totalResults
 
+    print map(response.json().get, [u'start', u'end', u'pageNumber'])
+
     # next pages of results
     limit = params['limit']
-    for start in range(limit+1, totalResults+limit+1, limit):
+    if totalResults <= limit:
+        return None
+
+    for start in range(limit, totalResults+limit+1, limit):
+
+        if start > maxResults:
+            return None
+
         params['start'] = start
         response = session.get(API, params=params)
         df = pd.DataFrame(response.json()['results'])
@@ -258,6 +268,10 @@ def indeed_api(job, city, state, table='postings', params=params, save_=True):
             return None
 
         df['job'] = job
+        df['indeed_city'] = df['city']
+        df['city'] = city
+        df['source'] = source
+        df['timestamp'] = pd.tslib.Timestamp.utcnow()
 
         df.formattedRelativeTime = map(
             lambda x: int(x[0]),
@@ -273,11 +287,7 @@ def update_postings(jobs=[], cities=[], table='postings'):
 
     if not any(jobs):
         jobs = pd.read_csv(PATH + 'jobs.txt')
-        jobs.job = jobs.job.str.title()
-
-    # jobs is unicode string
-    elif isinstance(jobs, basestring):
-        jobs = pd.DataFrame({'job':[jobs]})
+        #jobs.job = jobs.job.str.title()
 
     if not any(cities):
         cities = db.get_cities_from_db()
@@ -287,3 +297,35 @@ def update_postings(jobs=[], cities=[], table='postings'):
         print job, city, state
         if db.queryNotInDb(job, city, state, table):
             indeed_api(job, city, state, table)
+
+# for frontend only. less cities. one job.
+def get_postings_top_cities(job, maxResults=1001, table='postings', save_=True):
+
+    print job
+
+    # get top cities only for faster search
+    cities = db.get_top_cities_from_db()
+
+    for city, state in cities.values:
+        print city, state
+        if db.queryNotInDb(job, city, state, table):
+            indeed_api(job, city, state, table, maxResults, 'frontend',
+                       save_=save_)
+
+# for frontend only. less cities. one job.
+def get_salaries_for_job(job, table='salary', verbose_=True, save_=True):
+
+    columns = ['job', 'city', 'state', 'salary']
+    df = pd.DataFrame(columns=columns)
+
+    # get only the cities that actually have postings for the job
+    cities = db.get_cities_for_job(job)
+
+    for city, state in cities.values:
+        if verbose_: print city, state
+        if db.queryNotInDb(job, city, state, table):
+            df = scrape_indeed(job, city, state, df)
+            if verbose_: print df.tail(1)
+            if save_: db.to_sql(df.tail(1), table, 'append', null=0)
+
+    return df

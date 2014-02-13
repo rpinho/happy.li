@@ -55,9 +55,9 @@ def results():
         return emptyStringMessage('B')
 
     if jobNotInDb(job1):
-        updateDb(job1)#return jobNotInDbMessage(job1)
+        return jobNotInDbMessage(job1) #updateDb(job1)
     if jobNotInDb(job2):
-        updateDb(job2)#return jobNotInDbMessage(job2)
+        return jobNotInDbMessage(job2) #updateDb(job2)
 
     df = model.get_cities(job1, job2).reset_index()
     results = df.T.to_dict().values()[:n_cities]

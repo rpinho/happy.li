@@ -58,7 +58,7 @@ from
     where job = %(job2)s) as j2
     on p2.city = j2.city and p2.state = j2.state
     inner join cities4 c
-    on p1.city = c.city and p1.state = c.state
+    on p.city = c.city and p.state = c.state
 order by adj_salary, salary_sum, n_sum, salary_diff, n_diff;
 """
 

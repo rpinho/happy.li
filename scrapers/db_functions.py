@@ -19,7 +19,8 @@ def read_sql(query, params=None, db=DB):
 def to_sql(df, table_name, if_exists='append', null=mdb.NULL, db=DB):
 
     # replace NaNs
-    df.fillna(null, inplace=True)
+    if 'timestamp' not in df.columns:
+        df.fillna(null, inplace=True)
 
     # open connection to db
     db = mdb.connect(user="root", host="localhost", port=3306, db=db,
