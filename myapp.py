@@ -147,7 +147,7 @@ def emptyStringMessage(partner):
     return "Please enter job title for partner %s." %partner
 
 def lengthOneStringMessage(job):
-    return "Sorry, %s is not a valid job title."
+    return "Sorry, %s is not a valid job title." %job
 
 def queryLogging(job1, job2):
     logging.basicConfig(filename='queries.log')#, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')

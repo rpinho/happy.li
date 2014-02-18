@@ -290,10 +290,12 @@ def indeed_api(job, city, state, table='postings', maxResults=1001,
 #
 def update_postings(jobs=[], cities=[], table='postings'):
 
+    # get jobs from text file
     if not any(jobs):
         jobs = pd.read_csv(PATH + 'jobs.txt')
         #jobs.job = jobs.job.str.title()
 
+    # get unique cities from postings
     if not any(cities):
         cities = db.get_cities_from_db()
 
@@ -307,7 +309,8 @@ def update_postings(jobs=[], cities=[], table='postings'):
 def get_postings_top_cities(job, maxResults=1001, n_cities=30,
                             table='postings', save_=True):
 
-    print job
+    with open(PATH + 'jobs.txt', 'a') as f:
+        print >> f, job
 
     # get top cities only for faster search
     cities = db.get_top_cities_from_db(n_cities)
