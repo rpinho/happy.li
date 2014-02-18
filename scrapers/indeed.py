@@ -166,7 +166,8 @@ def scrape_indeed(job, city, state, df):
     return df.append(data, ignore_index=True)
 
 # jobs and cities are pd.DataFrames
-def update_salaries(jobs=[], cities=[], df=[], table='salary', verbose_=True):
+def update_salaries(jobs=[], cities=[], df=[], skiprows=0,
+                    table='salary', verbose_=True):
 
     columns = ['job', 'city', 'state', 'salary']
     #columns += ['n_postings', 'state_name']
@@ -175,7 +176,7 @@ def update_salaries(jobs=[], cities=[], df=[], table='salary', verbose_=True):
 
     # get jobs from text file
     if not any(jobs):
-        jobs = pd.read_csv(PATH + 'jobs.txt')
+        jobs = pd.read_csv(PATH + 'jobs.txt')[skiprows:]
         #jobs.job = jobs.job.str.title()
 
     # get unique cities from postings
@@ -288,11 +289,11 @@ def indeed_api(job, city, state, table='postings', maxResults=1001,
         print map(response.json().get, [u'start', u'end', u'pageNumber'])
 
 #
-def update_postings(jobs=[], cities=[], table='postings'):
+def update_postings(jobs=[], cities=[], skiprows=0, table='postings'):
 
     # get jobs from text file
     if not any(jobs):
-        jobs = pd.read_csv(PATH + 'jobs.txt')
+        jobs = pd.read_csv(PATH + 'jobs.txt')[skiprows:]
         #jobs.job = jobs.job.str.title()
 
     # get unique cities from postings
