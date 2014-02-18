@@ -26,6 +26,7 @@ IT Manager
 Dietitian
 Nutritionist
 Diagnostic Medical Sonographer
+Sonographer
 Massage Therapist
 Veterinary Technologist
 Veterinary Technician
@@ -128,3 +129,4 @@ Maintenance Technician
 Food Service Worker
 Pharmacy Technician
 Construction
+Electrician
