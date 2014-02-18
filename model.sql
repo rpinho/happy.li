@@ -39,4 +39,5 @@ from
     on p2.city = j2.city and p2.state = j2.state
     inner join cities4 c
     on p.city = c.city and p.state = c.state
+group by p.city, p.state
 order by adj_salary, salary_sum, n_sum, salary_diff, n_diff
