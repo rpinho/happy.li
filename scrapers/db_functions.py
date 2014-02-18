@@ -38,6 +38,14 @@ def queryNotInDb(job, city, state, table):
     sql = 'select * from %(table)s where job="%(job)s" and city="%(city)s" and state="%(state)s"' %locals()
     return read_sql(sql).empty
 
+def jobNotInDb(job):
+    sql = 'select * from postings where job=%(job)s'
+    return read_sql(sql, params={'job':job}).empty
+
+def salaryNotInDb(job):
+    sql = 'select * from salary where job=%(job)s'
+    return read_sql(sql, params={'job':job}).empty
+
 def _get_cities_from_db(table='jobs_cities2'):
     sql = 'select distinct(city), state, state_name from %s'%table
     return read_sql(sql)
@@ -58,14 +66,20 @@ def get_cities_for_job(job):
     sql = 'select city, state from postings where job=%(job)s group by city, state'
     return read_sql(sql, params={'job':job})
 
-def get_top_cities_from_db():
+def get_top_cities_from_db(n_cities=30):
     sql = """
-    (select city, state from top_cities order by n_postings desc limit 30)
+    (select city, state from top_cities order by n_postings desc limit %d)
     UNION
     (select city, state from top_cities order by top20 desc limit 20)
-    """
+    """ %n_cities
     return read_sql(sql)
 
 def get_country_codes_from_db():
-    sql = 'select distinct(Code) from mercer_quality_of_living_2012 as mercer inner join country_codes as country on country.Country = mercer.Country order by mercer.Rank'
+    sql = """
+    select distinct Code
+    from mercer_quality_of_living_2012 as mercer
+    inner join country_codes as country
+    on country.Country = mercer.Country
+    order by mercer.Rank
+    """
     return read_sql(sql)

@@ -13,7 +13,7 @@ import scrapers.indeed as indeed
 import model
 
 app = Flask(__name__)
-cities_table = 'cities4'
+#cities_table = 'cities4'
 JOBS_TABLE = 'postings'#jobs_cities2'
 n_cities = 10
 
@@ -49,16 +49,34 @@ def results():
     # print query to log file
     queryLogging(job1, job2)
 
+    # empty string
     if not job1:
         return emptyStringMessage('A')
     if not job2:
         return emptyStringMessage('B')
 
-    if jobNotInDb(job1):
-        return jobNotInDbMessage(job1) #updateDb(job1)
-    if jobNotInDb(job2):
-        return jobNotInDbMessage(job2) #updateDb(job2)
+    # title case
+    job1 = titlecasedJob(job1)
+    job2 = titlecasedJob(job2)
 
+
+    ### LIVE SEARCH #
+
+    if db.jobNotInDb(job1):
+        #return jobNotInDbMessage(job1)
+        indeed.get_postings_top_cities(job1, maxPostings, maxCities)
+
+    if db.salaryNotInDb(job1):
+        indeed.get_salaries_for_job(job1)
+
+    if db.jobNotInDb(job2):
+        #return jobNotInDbMessage(job2)
+        indeed.get_postings_top_cities(job2, maxPostings, maxCities)
+
+    if db.salaryNotInDb(job2):
+        indeed.get_salaries_for_job(job2)
+
+    # model
     df = model.get_cities(job1, job2).reset_index()
     results = df.T.to_dict().values()[:n_cities]
 
@@ -100,27 +118,21 @@ def ajson(what):
 
     return JSON[what]()
 
-def jobNotInDb(job):
-    sql = 'select * from postings where job=%(job)s'
-    df = db.read_sql(sql, params={'job':job})
-    return df.empty
+# return correct case if not already correctly capitalized
+def titlecasedJob(job):
+    # e.g. isupper() == True for job = 'CEO' or 'RN'
+    if not (job.istitle() or job.isupper()):
+        return job.title()
+    else:
+        return job
 
 def jobNotInDbMessage(job):
     #logging.basicConfig(filename='jobNotInDb.log', format='%(message)s')
     #logging.debug('%s', job)
-    return "Sorry, %s not in the database yet. Live search coming soon." %job.title()
+    return "Sorry, %s not in the database yet. Live search coming soon." %job
 
 def emptyStringMessage(partner):
     return "Please enter job title for partner %s." %partner
-
-# live scraping indeed.com
-def updateDb(job):
-    # get top cities only for faster search
-    cities = db.get_top_cities_from_db()
-    indeed.update_postings(job, cities)
-    # get only the cities that actually have postings for the job
-    cities = db.get_cities_for_job(job)
-    indeed.update_salaries(job, cities)
 
 def queryLogging(job1, job2):
     logging.basicConfig(filename='queries.log')#, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')

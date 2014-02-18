@@ -219,6 +219,9 @@ def indeed_api(job, city, state, table='postings', maxResults=1001,
                u'date', u'formattedRelativeTime',
                u'latitude', u'longitude', u'url']
 
+    # columns to add
+    columns += ['indeed_city', 'source', 'timestamp']
+
     # query
     location = ', '.join((city, state))
     params['l'] = location
@@ -299,12 +302,13 @@ def update_postings(jobs=[], cities=[], table='postings'):
             indeed_api(job, city, state, table)
 
 # for frontend only. less cities. one job.
-def get_postings_top_cities(job, maxResults=1001, table='postings', save_=True):
+def get_postings_top_cities(job, maxResults=501, n_cities=20,
+                            table='postings', save_=True):
 
     print job
 
     # get top cities only for faster search
-    cities = db.get_top_cities_from_db()
+    cities = db.get_top_cities_from_db(n_cities)
 
     for city, state in cities.values:
         print city, state
