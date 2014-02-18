@@ -47,7 +47,7 @@ def salaryNotInDb(job):
     return read_sql(sql, params={'job':job}).empty
 
 def _get_cities_from_db(table='jobs_cities2'):
-    sql = 'select distinct(city), state, state_name from %s'%table
+    sql = 'select distinct city, state, state_name from %s'%table
     return read_sql(sql)
 
 def get_cities_from_db():
@@ -55,7 +55,7 @@ def get_cities_from_db():
     return read_sql(sql)
 
 def _get_jobs_from_db(table='jobs_cities2'):
-    sql = 'select distinct(job) from %s'%table
+    sql = 'select distinct job from %s'%table
     return read_sql(sql)
 
 def get_jobs_from_db():

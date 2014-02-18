@@ -173,10 +173,12 @@ def update_salaries(jobs=[], cities=[], df=[], table='salary', verbose_=True):
     #columns += ['relative_salary', 'salaries_max', 'salaries_median',
     #            'trend_last2first', 'trend_median', 'trend_max']
 
+    # get jobs from text file
     if not any(jobs):
         jobs = pd.read_csv(PATH + 'jobs.txt')
         #jobs.job = jobs.job.str.title()
 
+    # get unique cities from postings
     if not any(cities):
         cities = db.get_cities_from_db()
 
