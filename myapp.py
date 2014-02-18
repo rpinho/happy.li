@@ -12,10 +12,14 @@ import scrapers.indeed as indeed
 # my model: main sql query and weighted average
 import model
 
-app = Flask(__name__)
-#cities_table = 'cities4'
-JOBS_TABLE = 'postings'#jobs_cities2'
+# number of cities shown in results.html
 n_cities = 10
+# max number of indeed.com job postings for live search
+maxPostings = 501
+# controls the number of cities for live search (NOTE: this number is not fixed)
+maxCities = 20
+
+app = Flask(__name__)
 
 @app.route("/")
 def hello():
@@ -55,7 +59,13 @@ def results():
     if not job2:
         return emptyStringMessage('B')
 
-    # title case
+    # one-letter job title
+    if len(job1) == 1:
+        return lengthOneStringMessage(job1)
+    if len(job2) == 1:
+        return lengthOneStringMessage(job2)
+
+    # title case job titles
     job1 = titlecasedJob(job1)
     job2 = titlecasedJob(job2)
 
@@ -97,9 +107,11 @@ def waypoints():
     return json.dumps(cities)
     #return cities.to_json(orient='split')#json.dumps(list(cities))#address)
 
-def jobs(table=JOBS_TABLE):
+def jobs(table='postings'):
     """Return list of jobs."""
-    job = request.args.get('term').strip(';')
+    job = request.args.get('term')
+    # protect from SQL injection
+    if job: job = job.strip(';')
     sql = "select job from {0} where job like '%{1}%' group by job"
     df = db.read_sql(sql.format(table, job))
     return json.dumps(df.job.values.tolist())
@@ -134,9 +146,16 @@ def jobNotInDbMessage(job):
 def emptyStringMessage(partner):
     return "Please enter job title for partner %s." %partner
 
+def lengthOneStringMessage(job):
+    return "Sorry, %s is not a valid job title."
+
 def queryLogging(job1, job2):
     logging.basicConfig(filename='queries.log')#, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
     logging.info('%s, %s', job1, job2)
+
+    # just log jobs and nothing else
+    with open('jobs.log', 'a') as f:
+        print >> f, job1, job2
 
 @app.route('/<pagename>')
 def regularpage(pagename=None):

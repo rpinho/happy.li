@@ -304,7 +304,7 @@ def update_postings(jobs=[], cities=[], table='postings'):
             indeed_api(job, city, state, table)
 
 # for frontend only. less cities. one job.
-def get_postings_top_cities(job, maxResults=501, n_cities=20,
+def get_postings_top_cities(job, maxResults=1001, n_cities=30,
                             table='postings', save_=True):
 
     print job
