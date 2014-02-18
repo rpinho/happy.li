@@ -155,7 +155,7 @@ def queryLogging(job1, job2):
 
     # just log jobs and nothing else
     with open('jobs.log', 'a') as f:
-        print >> f, job1, job2
+        print >> f, job1, '\t', job2
 
 @app.route('/<pagename>')
 def regularpage(pagename=None):
