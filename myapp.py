@@ -72,10 +72,16 @@ def results():
 
     ### LIVE SEARCH #
 
+    # job not in db: do live search
     if db.jobNotInDb(job1):
         #return jobNotInDbMessage(job1)
         indeed.get_postings_top_cities(job1, maxPostings, maxCities)
 
+    # search did not match any jobs
+    if db.jobNotInDb(job1):
+        return noJobsMessage(job1)
+
+    # salary not in db: do live search
     if db.salaryNotInDb(job1):
         indeed.get_salaries_for_job(job1)
 
@@ -83,6 +89,11 @@ def results():
         #return jobNotInDbMessage(job2)
         indeed.get_postings_top_cities(job2, maxPostings, maxCities)
 
+    # search did not match any jobs
+    if db.jobNotInDb(job2):
+        return noJobsMessage(job2)
+
+    # salary not in db: do live search
     if db.salaryNotInDb(job2):
         indeed.get_salaries_for_job(job2)
 
@@ -148,6 +159,9 @@ def emptyStringMessage(partner):
 
 def lengthOneStringMessage(job):
     return "Sorry, %s is not a valid job title." %job
+
+def noJobsMessage(job):
+    return 'The search "%s" did not match any jobs.' %job
 
 def queryLogging(job1, job2):
     logging.basicConfig(filename='queries.log')#, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
