@@ -15,7 +15,7 @@ import model
 # number of cities shown in results.html
 n_cities = 10
 # max number of indeed.com job postings for live search
-maxPostings = 401
+maxPostings = 501
 # controls the number of cities for live search (NOTE: this number is not fixed)
 maxCities = 30
 
