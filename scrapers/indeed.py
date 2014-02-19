@@ -289,7 +289,8 @@ def indeed_api(job, city, state, table='postings', maxResults=1001,
         print map(response.json().get, [u'start', u'end', u'pageNumber'])
 
 #
-def update_postings(jobs=[], cities=[], skiprows=0, table='postings'):
+def update_postings(jobs=[], cities=[], skiprows=0, force=False,
+                    table='postings'):
 
     # get jobs from text file
     if not any(jobs):
@@ -303,7 +304,7 @@ def update_postings(jobs=[], cities=[], skiprows=0, table='postings'):
     for job, location in itertools.product(jobs.job.values, cities.values):
         city, state = location
         print job, city, state
-        if db.queryNotInDb(job, city, state, table):
+        if db.queryNotInDb(job, city, state, table) or force:
             indeed_api(job, city, state, table)
 
 # for frontend only. less cities. one job.
