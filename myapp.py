@@ -15,9 +15,9 @@ import model
 # number of cities shown in results.html
 n_cities = 10
 # max number of indeed.com job postings for live search
-maxPostings = 501
+maxPostings = 401
 # controls the number of cities for live search (NOTE: this number is not fixed)
-maxCities = 20
+maxCities = 30
 
 app = Flask(__name__)
 
@@ -152,13 +152,13 @@ def titlecasedJob(job):
 def jobNotInDbMessage(job):
     #logging.basicConfig(filename='jobNotInDb.log', format='%(message)s')
     #logging.debug('%s', job)
-    return "Sorry, %s not in the database yet. Live search coming soon." %job
+    return 'Sorry, "%s" not in the database yet. Live search coming soon.' %job
 
 def emptyStringMessage(partner):
     return "Please enter job title for partner %s." %partner
 
 def lengthOneStringMessage(job):
-    return "Sorry, %s is not a valid job title." %job
+    return 'Sorry, "%s" is not a valid job title.' %job
 
 def noJobsMessage(job):
     return 'Sorry, the search "%s" did not match any jobs. Is "%s" an english word? Currently we only search for jobs in the US.' %(job, job)
