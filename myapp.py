@@ -161,7 +161,7 @@ def lengthOneStringMessage(job):
     return "Sorry, %s is not a valid job title." %job
 
 def noJobsMessage(job):
-    return 'The search "%s" did not match any jobs.' %job
+    return 'Sorry, the search "%s" did not match any jobs. Is "%s" an english word? Currently we only search for jobs in the US.' %(job, job)
 
 def queryLogging(job1, job2):
     logging.basicConfig(filename='queries.log')#, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
