@@ -14,7 +14,10 @@ columns = [u'salary_sum', u'salary_diff', u'adj_salary',
            u'n_sum', u'n_diff']
 weights = [0, 0, 0.4, 0.6, -0.3]
 weights = dict(zip(columns, weights))
-nan_values = {'job1':'', 'job2':'', 'salary1':0, 'salary2':0, 'n1':0, 'n2':0,
+nan_values = {'job1':'', 'job2':'',
+              'n1':0, 'n2':0, 'n_sum':0, 'n_diff':0,
+              'salary1':0, 'salary2':0,
+              'salary_sum':0, 'salary_diff':0, 'adj_salary':0,
               'description':'', 'image_url':''}
 
 #
