@@ -12,7 +12,7 @@
       <div class="card hovercard">
         <img src="{{ result['image_url'] }}" alt=""/>
         <div class="info">
-          <div class="title">{{loop.index }}. {{ result['city'] }}</div>
+          <div class="title">{{ loop.index }}. {{ result['city'] }}, {{ result['state'] }}</div>
           median household income {{ result['mean_household_income_$'] }}
           <div class="row">
             <div class="col-xs-6"><strong>{{ result['job1'] }}</strong></div>
