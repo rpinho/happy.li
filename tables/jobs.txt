@@ -1,2 +1,1 @@
 job
-math, english, latin, spanish, french, geography, science, biology, physics, chemistry, history
