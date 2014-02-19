@@ -142,7 +142,8 @@ def ajson(what):
     return JSON[what]()
 
 # return correct case if not already correctly capitalized
-def titlecasedJob(s):
+def titlecasedJob(job):
+    s = str(job)
     # e.g. isupper() == True for s = 'CEO' or 'RN'
     if not (s.istitle() or s.isupper() or any(map(str.isupper, s.split()))):
         return s.title()
