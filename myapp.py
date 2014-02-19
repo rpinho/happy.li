@@ -142,12 +142,12 @@ def ajson(what):
     return JSON[what]()
 
 # return correct case if not already correctly capitalized
-def titlecasedJob(job):
-    # e.g. isupper() == True for job = 'CEO' or 'RN'
-    if not (job.istitle() or job.isupper()):
-        return job.title()
+def titlecasedJob(s):
+    # e.g. isupper() == True for s = 'CEO' or 'RN'
+    if not (s.istitle() or s.isupper() or any(map(str.isupper, s.split()))):
+        return s.title()
     else:
-        return job
+        return s
 
 def jobNotInDbMessage(job):
     #logging.basicConfig(filename='jobNotInDb.log', format='%(message)s')
