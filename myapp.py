@@ -53,6 +53,10 @@ def results():
     # print query to log file
     queryLogging(job1, job2)
 
+    # remove leading and trailing whitespace
+    job1 = job1.strip()
+    job2 = job2.strip()
+
     # empty string
     if not job1:
         return emptyStringMessage('A')
