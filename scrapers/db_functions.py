@@ -4,14 +4,18 @@ import pandas.io.sql as sql
 # pandas' sql wrappers defined in
 # https://github.com/pydata/pandas/blob/master/pandas/io/sql.py
 
+HOST = 'localhost'
+USER = 'root'
 DB = 'demo'
+CHARSET = 'utf8'
+PORT = 3306
 
 #db = mdb.connect(user="root", host="localhost", port=3306, db=DB)
 #cursor = db.cursor()
 
 def read_sql(query, params=None, db=DB):
-    db = mdb.connect(user="root", host="localhost", port=3306, db=db,
-                     charset='utf8')
+    db = mdb.connect(user=USER, host=HOST, port=PORT, db=db,
+                     charset=CHARSET)
     df = sql.read_sql(query, db, params=params)
     db.close()
     return df
